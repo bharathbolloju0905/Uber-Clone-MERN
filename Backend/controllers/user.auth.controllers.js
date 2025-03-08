@@ -6,6 +6,7 @@ const blacklistToken = require('../models/blacklist.token');
 
 module.exports.registerController =async (req,res)=>{
     const errors = validationResult(req);
+    
     if(!errors.isEmpty()){
         return res.status(400).json({errors:errors.array()});
     }
@@ -35,6 +36,7 @@ module.exports.registerController =async (req,res)=>{
 
 module.exports.loginController = async (req,res)=>{
     const errors = validationResult(req);
+   
     if(!errors.isEmpty()){
         return res.status(400).json({errors:errors.array()});
     }
