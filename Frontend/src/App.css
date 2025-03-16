@@ -3,12 +3,13 @@
     padding: 0;
     box-sizing: border-box;
     color: white;
-    background-color: rgba(0, 0, 0, 0.103);
+    /* background-color: rgba(0, 0, 0, 0.103); */
+    font-family: monospace;
 }
 .body{
     width: 100vw;
     height: 100vh; 
-    padding: 10px;
+    padding: 10px; 
     display: flex;
     justify-content: space-between;
     flex-direction: column;
@@ -38,13 +39,29 @@
     font-size: 2rem;
     margin-bottom: 1.5rem;
 }
-.getting-started a{
+.getting-started a,.confirm{
    padding: 1.4rem 2rem;
    background-color: rgb(22, 19, 19);
    text-decoration: none;
    border-radius: 10px;
     text-align: center;
     font-size: 1.5rem;
+}
+.confirm{
+   width: 90vw;
+   display: inline-flex;
+   position: absolute;
+   justify-content: center;
+    margin-bottom: 1.5rem;
+    margin: 10px;
+    bottom: 2rem;
+    left: 0.8rem;
+    font-size: 1.8rem;
+
+}
+
+.vehicle-details pre{
+    font-size: x-large;
 }
 .credentials{
     background-image: url("https://images.unsplash.com/photo-1484359755660-c7ed8f31f0cc?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTB8fGRhcmslMjByb2FkfGVufDB8fDB8fHww");
@@ -58,6 +75,7 @@
     width: 150px;
     
 }
+
 .h-w-100{
     width: 100vw;
     height: 100vh;
@@ -83,7 +101,7 @@ form  input,.signin{
 form p{
     font-size: 1.5rem;
     text-align: center;
-}
+} 
 .signin{
     flex-direction: column;
     gap: 1rem;
@@ -96,6 +114,7 @@ form input, button, select{
     font-size: x-large;
     border: 0.5px solid white;
     border-radius:10px ;
+    background-color: black;
 }
 select {
   
@@ -121,7 +140,433 @@ form input:focus{
 h1{
     text-align: center;
 }
+.main-container{
+    width: 100vw;
+    height: 100vh;
+    background-color: black;
+    position: relative;
+}
+.uber-logo{
+    position: absolute;
+    margin: 10px;
+    
+}
+.logo{
+    width:100px;
+    
+}
+.moon{
+    padding: 7px;
+    /* background-color: red; */
+    border: 1px dotted white;
+    border-radius: 50%;
+}
+.img{
 
+    height: 100%;
+   
+}
+.main-container{
+    height: 100vh;
+    overflow:scroll ;
+}
+.input-container{
+    position: fixed;
+    bottom: 3rem;
+    padding: 20px;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    background-color: black;
+   
+ 
+    
+}
+.input-container input{ 
+    width: 100%;
+    padding: 10px 10px 10px 3.6rem;
+    font-size: x-large;
+    border: 0.5px solid white;
+    border-radius:10px ;
+    margin-top: 10px;
+    background: #000;
+}
+.imgloc{
+    width: 35px;
+    height: 35px;
+}
+.suggest{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 15px;
+    padding: 8px;
+    color: white;
+    border-radius: 10px;
+    cursor: pointer;
+    border:1px solid rgb(126, 125, 125) ;
+   
+}
+.suggestions{
+    display: none;
+    flex-direction: column;
+    background-color: black;
+    border-radius: 10px;
+    gap: 10px;
+    width: 100%;
+    margin-top: 30px;
+    overflow-y:auto ;
+  
+}
+.para{
+    font-size: medium;
+}
+b{
+    font-size: 16px;
+}
+.horizontal{
+    width: 0.3rem;
+    height: 75px;
+    background-color: rgb(87, 84, 84);
+    position: absolute;;
+    margin-top: 1.5rem;
+    left: 3rem;
+   
+}
+.choosing-vehicle{
+    width: 100vw;
+    background: #000;
+    height: 0vh;
+    z-index: 5;
+    position: absolute;
+    bottom: 0;
+    padding: 10px;
+    display: none;
+    flex-direction: column;
+}
+.vehicle{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-radius: 10px;
+    padding: 10px;
+    gap: 10px;
+}
+.vehicle:active{
+    border: 2px solid white;
+}
+.vehicle img{
+    width: 80px;
+}
+.toggle{
+    position: absolute;
+    left: 1rem;
+    width: 40px;
+    height: 40px;  
+}
+.toggler{
+   cursor: pointer;
+    width: 40px;
+    height: 40px;
+    z-index: 5;
+ 
+}
+.justify-start{
+    justify-content: start;
+}
+.vehicle p{
+    font-size: 25px;
+}
+p span{
+    font-size: 15px;
+}
+span p{
+    font-size: 15px;
+    color: rgb(126, 121, 121);
+}
+.vehicle-details{
+    height: 50vh;
+    width: 100vw;
+    padding: 10px;
+    background-color: black;
+    position: absolute;
+    bottom: 0;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    justify-content: start;
+    gap: 10px;
+    padding-top: 2rem;
+    display: none;
+
+}
+.looking-for-vehicle{
+    display: none;
+}
+.ride{
+   
+    font-size: larger;
+    justify-content: center;
+    align-items: center;
+    padding: 10px;
+    gap: 10px;
+}
+.ride p{
+    font-size: 20px;
+}
+.ride-accepted{
+    display: flex;
+    height: 60vh;
+    gap: 2rem;
+}
+.info{
+    width: 100%;
+    justify-content: space-between;
+
+}
+.captain-nav{
+    display: flex;
+    justify-content: space-between;
+    margin: 10px;
+    align-items: center;
+    position: absolute;
+    width: 90vw;
+}
+.captain-mode-toggler{
+    height: 40px;
+    width: 40px;
+}
+.mt-5{
+    margin-top: 5rem;
+}
+.icon-up{
+    width:20px;
+    height:20px
+}
+.mode{
+    padding: 10px;
+    justify-content: space-evenly;
+    align-items: center;
+    background-color:rgb(36 38 43);
+    border-radius: 10px;
+    position: absolute;
+    top: 5rem;
+    width: 100vw;
+    gap: 15px;
+
+}
+.space{
+    width: 100%;
+    justify-content: space-between;
+}
+.details-trip{
+  flex-direction: column;
+    align-items: center;
+}
+.navigations{
+    padding: 10px;
+    background-color: rgb(30, 71, 71);
+    border-radius: 10px;
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    align-items: center;
+    position: absolute;
+    top: 5rem;
+}.icon-right{
+    width: 40px;
+    height: 40px;
+}
+.navigations p{
+    font-size: xx-large;
+}
+.map-container>div{
+    width: 100%;
+    overflow-y: scroll;
+}
+.navigator{
+    position: absolute;
+    top:45%;
+    height: 25px;
+    width: 24px;
+    right: 50%;
+}
+.details{
+    padding: 10px 26px;
+    width: 100vw;
+    justify-content: space-between;
+}
+.captain-details{
+    padding: 20px;
+    position: absolute;
+    bottom: 0;
+    height: 33vh;
+    width: 100vw;
+    background-color: black;
+    display: flex;
+   align-items: start;
+  gap: 30px;
+    border-radius: 10px;
+    flex-direction: column;
+}
+.captain-details img , .ride-details img ,.trip-user img{
+    height: 50px;
+    width: 50px;
+    border-radius: 50%;
+    object-fit: cover;
+    
+}
+.captain-details .img{
+    height: fit-content;
+    justify-content: start;  
+    gap: 10px;
+    width: 100%;
+  
+}.font-moderate{
+    font-size: 20px;
+}
+.img h2,.img p{
+    margin-left:2rem ;
+}
+
+.img p{
+    margin: 0;
+    color:rgb(150, 150, 150)
+}
+.captain-history{
+    padding: 10px;
+    width: 100%;
+   
+    background-color: #24262b;
+    border-radius: 10px;
+    padding: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.icon{
+    padding:2px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 5px;
+    background: transparent;
+}
+.ride-details{
+    width: 100vw;
+    height: 50vh;
+    position: absolute;
+    bottom: 0;
+    background: #000;  
+    padding: 10px;
+  
+}.img-loc{
+    width: 25px;
+    margin-left: 5px;
+}
+
+.coloring{
+   background: rgb(122, 128, 122); 
+}
+.user-ride, .user-info{
+    gap: 10px;
+    justify-content: space-between   ;
+    align-items: center;
+}
+.ride-details-container{
+    display: flex;
+    gap:10px ;
+    flex-direction: column;
+   
+}
+.no-border{
+    border: none;
+}
+.content-start{
+    justify-content: start;
+}
+.ride-btn{
+    color: white;
+    width: 100%;
+    padding: 10px 14px;
+    display: inline-flex;
+    text-decoration: none;
+   justify-content: center;
+   align-items: center;
+   font-size: 1.5rem;
+   cursor: pointer;
+  margin-top: 10px;
+  font-weight: 500;
+  border-radius: 10px;
+  margin-right: 10px;
+}
+.ride-btn:focus{
+    outline: none; 
+}
+.hight-full{
+    height: 100vh;
+    background-color: #000;
+    position: absolute ;
+    top:0;
+}
+.accept-confirm{
+    background-color: rgb(73, 170, 250);
+}
+.accept{
+    background-color: rgb(21, 161, 108);
+}
+.ride-details-container .buttons{
+    margin-top: 50px;
+}
+.trip-navigations{
+    margin: 2px 5px;
+    border-radius:10px ;
+    padding: 10px;
+    gap: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    background-color: #13171d;
+    position: absolute;
+    bottom: 0;
+    width: 98%;
+}
+.trip-user{
+    display: flex;
+    justify-content: start;
+    width: 100%;
+    gap: 10px;
+}
+.trip-user :nth-child(2){
+    gap: 3px;
+    flex-direction: column;
+}
+.trip-user p{
+    font-size: larger;
+}.end-ride-btn{
+    text-decoration: none;
+    padding: 15px 14px;
+    border-radius: 10px;
+    background-color: aqua;
+    color: black;
+    display: inline-flex;
+    width: 100%;
+    font-size: 2rem;
+    text-align: center;
+    justify-content: center;
+    margin: 3rem 0rem;
+}
+.pos-static-adjust{
+    position: static;
+    background-color: #24262b;
+    
+}
+.pos-static-adjust p{
+    font-size: 18px;
+}
 @media all and (min-width:768px) {
     .credentials{
         margin-top: 30%;

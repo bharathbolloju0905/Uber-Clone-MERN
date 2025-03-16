@@ -9,6 +9,8 @@ import Main from './pages/Main';
 import CaptainMain from './pages/CaptainMain';
 import {Protected} from './pages/Protected';
 import './App.css';
+import Riding from './pages/Riding';
+import Pickup from './pages/Pickup';
 
 const App = () => {
   return (
@@ -20,7 +22,9 @@ const App = () => {
       <Route path="/cap-Signup" element={<CaptainSignup/>} />
       <Route path="/cap-Signin" element={<CaptainSignin/>} />
       <Route path="/main" element={ <Protected><Main/></Protected> } />
+      <Route path="/riding" element={ <Protected><Riding/></Protected> } />
       <Route path="/cap-main" element={ <Protected><CaptainMain/></Protected> } />
+      <Route path="/user-pickup" element={ <Protected><Pickup/></Protected> } />
     </Routes>
   )
 }
