@@ -8,6 +8,7 @@ import CaptainSignin from './pages/CaptainSignin';
 import Main from './pages/Main';
 import CaptainMain from './pages/CaptainMain';
 import {Protected} from './pages/Protected';
+import {CaptainProtected} from './pages/CaptainProtected';
 import './App.css';
 import Riding from './pages/Riding';
 import Pickup from './pages/Pickup';
@@ -23,8 +24,8 @@ const App = () => {
       <Route path="/cap-Signin" element={<CaptainSignin/>} />
       <Route path="/main" element={ <Protected><Main/></Protected> } />
       <Route path="/riding" element={ <Protected><Riding/></Protected> } />
-      <Route path="/cap-main" element={ <Protected><CaptainMain/></Protected> } />
-      <Route path="/user-pickup" element={ <Protected><Pickup/></Protected> } />
+      <Route path="/cap-main" element={ <CaptainProtected ><CaptainMain/></CaptainProtected> } />
+      <Route path="/user-pickup" element={<CaptainProtected ><Pickup/></CaptainProtected> } />
     </Routes>
   )
 }

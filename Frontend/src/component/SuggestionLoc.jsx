@@ -1,23 +1,16 @@
 import React from 'react'
 import { FaLocationDot } from "react-icons/fa6";
 
-
-
-const SuggestionLoc = ({settogglePannel , togglePannel,VehicleRef}) => {
-  function handleClick(){
-    togglePannel && settogglePannel(false);
-    VehicleRef.current.style.height = '60vh';
-    VehicleRef.current.style.display = 'flex';
-  }
+const SuggestionLoc = ({ suggestion, onClick }) => {
   return (
-    <div className='suggest' onClick={handleClick}>
-        <FaLocationDot className='imgloc' />
-        <div>
-            <p><b>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Illo, nulla.</b></p>
-            <p className='para'>Lorem ipsum dolor sit amet consectetur adipisicing elit.</p>
-        </div>
+    <div className='suggest' onClick={onClick}>
+      <FaLocationDot className='imgloc' />
+      <div>
+        <p><b>{suggestion.description}</b></p>
+        <p className='para'>{suggestion.structured_formatting.secondary_text}</p>
+      </div>
     </div>
   )
 }
 
-export default SuggestionLoc
+export default SuggestionLoc;

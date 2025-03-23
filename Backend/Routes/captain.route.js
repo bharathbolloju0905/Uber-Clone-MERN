@@ -12,4 +12,6 @@ router.post("/login", [body("email").isEmail().withMessage("Email is not valid")
 router.get("/profile",authmiddleware.authenticatedCaptain,authController.getProfile);
 
 router.get("/logout",authController.logoutCaptain);
+
+
 module.exports = router;

@@ -3,15 +3,16 @@ import { FaUser } from "react-icons/fa";
 
 
 
-const Vehicle = ({img,mins,price,capacity,selectedveh,VehicleRef}) => {
+const Vehicle = ({img,mins,price,capacity,selectedveh,VehicleRef,type,setSelectedVehicle}) => {
   function handleVehicleSelected(){
     console.log("vehicle selected")
+    setSelectedVehicle(type)
     selectedveh.current.style.display = "flex";
     VehicleRef.current.style.display = "none";
   }
   return (
     <div className="vehicle" onClick={handleVehicleSelected}>
-        <img src={img} alt="hello" />
+        <img src={img} alt="hello"  />
         <div >
            <p className='v-para'> Affordable and Conforable <span><FaUser/>{capacity}</span></p> 
        <span> <p>{mins} min away. reach you soon</p></span>

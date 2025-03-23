@@ -1,36 +1,67 @@
 import React from 'react'
 import { FaUser } from "react-icons/fa";
-import { Link } from 'react-router-dom';
+// Removed unused Link import
 import { FaLocationDot } from "react-icons/fa6";
+import { useState } from 'react';
+import axios from 'axios'; // Ensure axios is imported
+import toast from 'react-hot-toast';
 
 
 
-const VehicleDetial = ({LookingVehicle,VehicleDetials}) => {
-    function handleClick(){
-        console.log("vehicle selected")
+const VehicleDetial = ({ LookingVehicle, VehicleDetials, img, destination, fare, source, selectedVehicle }) => {
+    const [loading, setLoading] = useState(false);
+    async function handleClick(e) {
+        // e.preventDefault();
+        console.log("vehicle selected");
+        const data = {
+            pickup: source,
+            destination: destination,
+            vehicleType: selectedVehicle ,
+            fare
+        };
+        
+        try {
+            setLoading(true)
+            const ride = await axios.post('http://localhost:3000/rides/create', data, {
+                headers: { // Fixed typo in 'headers'
+                    Authorization: `Bearer ${localStorage.getItem('token')}`
+                }
+            });
+
+         toast.success("Looking For Captains");
         LookingVehicle.current.style.display = "flex";
         VehicleDetials.current.style.display = "none";
-      }
-    return (
-        <>
+        console.log(ride)
+    }
+      catch (error) {
+        toast.error(source)
+        console.log("lol",source)
+       
+    }
+    finally {
+        setLoading(false);
+    }
+}
+return (
+    <>
+        <div>
+            <img src={img} alt="vehicle img" className='img' />
+        </div>
+        <div className='utility-flex ride'>
+            <FaLocationDot className='imgloc' /><p>destination : { destination }</p>
+        </div>
+        <div className='utility-flex details'>
             <div>
-                <img src="/images/car.png" alt="vehicle img" />
+                <h2>Go Flex  </h2><FaUser />4
+                <pre>5:17pm .  3 mins away</pre>
             </div>
-            <div className='utility-flex ride'>
-            <FaLocationDot className='imgloc'/><p> 3-5-17/5, 2nd Floor, Opp. SBI, VV Nagar, Kukatpally, Hyderabad, Telangana 500072</p>
-            </div>
-            <div className='utility-flex details'>
-                <div>
-                    <h2>Go Flex  </h2><FaUser/>4
-                    <pre>5:17pm .  3 mins away</pre>
-                </div>
-                <h2>$517.045</h2>
-            </div>
-            <div>
-                <div onClick={handleClick} className="confirm">Confirm Booking</div>
-            </div>
-        </>
-    )
+            <h2>${fare}</h2>
+        </div>
+        <div>
+            <div onClick={handleClick} className="confirm">{!loading ? "Confirm Booking" : "Loading..."}</div>
+        </div>
+    </>
+)
 }
 
-export default VehicleDetial
+export default VehicleDetial;

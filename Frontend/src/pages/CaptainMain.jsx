@@ -8,10 +8,13 @@ import { MdSpeed } from "react-icons/md";
 import { RxRotateCounterClockwise } from "react-icons/rx";
 import RideDetails from '../component/RideDetails';
 import CaptainAcceptingRide from '../component/CaptainAcceptingRide';
+import { useCaptainContext } from '../context/captainContext';
 const CaptainMain = () => {
+
   const [captainStatus, setcaptainStatus] = useState(false)
   const [ridedetails, setridedetails] = useState(false)
   const [confirmtion, setconfirmtion] = useState(false)
+  const {captain} = useCaptainContext()
 function handleClick(){
     setcaptainStatus(!captainStatus)
     setridedetails(!ridedetails)
@@ -43,7 +46,7 @@ function handleClick(){
         <div className="utility-flex img" >
           <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTqb3ltH2zwdPZqPg3H_6v5uEb4kjPF2PXfgiUDiWJT3vu1XNhFp29qVyQZ5y70AtYR7K8&usqp=CAU" alt="captain-img" />
           <div>
-            <h3 className='font-moderate'>Captain Jack The Sparrow</h3>
+            <h3 className='font-moderate'>{ captain?.fullname.firstname + " " + captain?.fullname.lastname}</h3>
             <p>Expert driver</p>
           </div>
           <div>

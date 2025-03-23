@@ -58,6 +58,9 @@ const captainSchema =  mongoose.Schema({
         type:String, 
         enum:['active','inactive'],
         default:'inactive',
+    },
+    socketId:{
+        type:String
     }
 });
 
