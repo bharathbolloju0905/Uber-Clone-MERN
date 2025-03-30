@@ -28,10 +28,11 @@ const captainSchema =  mongoose.Schema({
         required:true,
     },
     location:{
-        lang:{
+       
+        lng:{
             type:Number, 
         },
-        lat:{
+        ltd:{
             type:Number,
         },
     },
@@ -60,7 +61,7 @@ const captainSchema =  mongoose.Schema({
         default:'inactive',
     },
     socketId:{
-        type:String
+        type:String ,
     }
 });
 

@@ -6,7 +6,8 @@ import VehicleDetial from '../component/VehicleDetial';
 import LookingForVehicle from '../component/LookingForVehicle';
 import RideAccepted from '../component/RideAccepted';
 import axios from 'axios';
-
+import { useSocketContext } from '../context/SocketContext';
+import {useUserContext} from '../context/userContext';
 const Main = () => {
   const inputContainer = useRef(null);
   const suggestions = useRef(null);
@@ -19,7 +20,8 @@ const Main = () => {
   const [destination, setDestination] = useState('');
   const [suggestionsList, setSuggestionsList] = useState([]);
   const [activeInput, setActiveInput] = useState(null);
-  
+  const { socket, receiveMessage, sendMessage } = useSocketContext()
+  const {user} = useUserContext()
   const [fare, setFare] = useState({
     car: 0,
     auto: 0,
@@ -40,7 +42,15 @@ const Main = () => {
         inputContainer.current.style.height = "fit-content";
       inputContainer.current.style.top = "unset";
     }
-  }, [togglePannel])
+  }, [togglePannel]);
+
+  useEffect(()=>{
+    const data = {
+      typeOfUser:"user",
+      userId: user._id
+    }
+    sendMessage('join', data)
+  },[])
 
   const handleInputChange = async (e, setInput) => {
     const value = e.target.value;
@@ -63,6 +73,12 @@ const Main = () => {
       setSuggestionsList([]);
     }
   };
+  useEffect(() => {
+    receiveMessage("ride-accepted", (data) => {
+      console.log("Ride accepted:", data);
+      
+    })
+  });
 
   const handleSuggestionClick = (suggestion) => {
     if (activeInput === 'source') {

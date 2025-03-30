@@ -14,6 +14,7 @@ const CaptainSignup = () => {
     plate: "",
     capacity: "",
     color: "",
+    phonr:"",
   })
 const {Loading,signup} = useSignup() ;
   function handleChange(e) {

@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { BsToggle2Off } from "react-icons/bs";
 import { BsToggle2On } from "react-icons/bs";
 import { FaRegMoon } from "react-icons/fa";
@@ -9,16 +9,61 @@ import { RxRotateCounterClockwise } from "react-icons/rx";
 import RideDetails from '../component/RideDetails';
 import CaptainAcceptingRide from '../component/CaptainAcceptingRide';
 import { useCaptainContext } from '../context/captainContext';
-const CaptainMain = () => {
+import { useSocketContext } from '../context/SocketContext';
 
-  const [captainStatus, setcaptainStatus] = useState(false)
-  const [ridedetails, setridedetails] = useState(false)
-  const [confirmtion, setconfirmtion] = useState(false)
-  const {captain} = useCaptainContext()
-function handleClick(){
-    setcaptainStatus(!captainStatus)
-    setridedetails(!ridedetails)
-}
+const CaptainMain = () => {
+  const { sendMessage,receiveMessage } = useSocketContext();
+  const { captain } = useCaptainContext();
+
+  const [captainStatus, setCaptainStatus] = useState(false);
+  const [rideDetails, setRideDetails] = useState(false);
+  const [confirmation, setConfirmation] = useState(false);
+  const [newride, setnewride] = useState(null);
+
+  useEffect(() => {
+    if (captain) {
+      const data = {
+        typeOfUser: "captain",
+        userId: captain._id,
+      };
+      sendMessage("join", data);
+    }
+  }, [captain, sendMessage]);
+
+  useEffect(() => {
+    const updateLocation = () => {
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition((position) => {
+          const { latitude, longitude } = position.coords;
+          const captainId = captain._id;
+          sendMessage("update-captain-location", { captainId ,location:{ltd: latitude, lng: longitude} });
+        });
+      }
+    };
+
+    const intervalId = setInterval(updateLocation, 10000); // Call every 10 seconds
+
+    return () => clearInterval(intervalId); // Cleanup on component unmount
+  }, [sendMessage]);
+  
+
+  useEffect(() => {
+  receiveMessage("new-ride", (ride) => {
+    console.log("ride",ride)
+    setnewride(ride);
+
+  })
+  }, [receiveMessage,captain]);
+
+  const handleClick = () => {
+    setCaptainStatus(!captainStatus);
+    setRideDetails(!rideDetails);
+  };
+
+  if (!captain) {
+    return <p>Loading...</p>; // Handle case where captain data is not yet available
+  }
+
   return (
     <div className='main-container'>
       <div className='captain-nav'>
@@ -73,14 +118,14 @@ function handleClick(){
         </div>
 
       </div>
-      {ridedetails && (
+      {rideDetails && (
         <div className='ride-details '>
-          <RideDetails setridedetails={setridedetails} ridedetails={ridedetails}  confirmtion={confirmtion} setconfirmtion={setconfirmtion} />
+          <RideDetails setridedetails={setRideDetails} ridedetails={rideDetails}  confirmtion={confirmation} setconfirmtion={setConfirmation} newRide = {newride} />
         </div>
       )}
-         {confirmtion && 
+         {confirmation && 
          (<div className='ride-details hight-full'>
-         <CaptainAcceptingRide setridedetails={setridedetails} ridedetails={ridedetails}  confirmtion={confirmtion} setconfirmtion={setconfirmtion}/>
+         <CaptainAcceptingRide setridedetails={setRideDetails} ridedetails={rideDetails}  confirmtion={confirmation} setconfirmtion={setConfirmation} newRide = {newride}/>
    </div>)}
 
     </div>

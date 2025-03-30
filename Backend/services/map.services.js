@@ -1,6 +1,8 @@
 
 const axios = require('axios');
+const captainModel = require("../models/captain.model");
 
+// Ensure geospatial index is created on the location field
 
 module.exports.getCoordinates = async function (address) {
 
@@ -94,6 +96,31 @@ module.exports.getFare = async function (origin, destination) {
         return fare;
     } catch (error) {
         console.log(error);
+        return error;
+    }
+};
+
+module.exports.getnearbyCaptains = async function ( ltd, lng, distance ) {
+    try {
+        // Validate inputs
+        if (!ltd ||!lng || !distance) {
+            throw new Error('Invalid coordinates: ltd, lng and distance are required.')
+          
+        }
+        console.log(ltd,lng,distance)
+    await captainModel.collection.createIndex({ location: "2dsphere" });
+
+        const nearbyCaptains = await captainModel.find({
+            location: {
+                $geoWithin: {
+                    $centerSphere: [[ltd, lng], distance /6371 ] // Convert meters to miles
+                }
+            }
+        });
+
+        return nearbyCaptains;
+    } catch (error) {
+        console.log(error.message || error);
         return error;
     }
 };

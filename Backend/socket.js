@@ -34,13 +34,31 @@ function initializeSocket(server) {
             }
         });
 
+        socket.on("update-captain-location", async ({ captainId, location }) => {
+            try {
+               
+                // Validate location format
+                if (!location || typeof location.ltd !== "number" || typeof location.lng !== "number") {
+                    console.error("Invalid location format");
+                    return;
+                }
+                await captainModel.findByIdAndUpdate(captainId, { location });
+                console.log(`Captain ${captainId} location updated: ${location}`);  
+            } catch (error) {
+                console.error("Error updating captain location:", error.message);
+            }
+        });
+
+
         socket.on("disconnect", () => {
             console.log(`Socket disconnected: ${socket.id}`);
         });
+
+    
     });
 }
 
-function sendMessageToSocket(socketId, event, message) {
+function sendMessageToSocket({socketId, event, message}) {
     if (io) {
         io.to(socketId).emit(event, message);
     } else {

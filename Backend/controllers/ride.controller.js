@@ -1,6 +1,9 @@
 const ridemodel = require('../models/ride.model');
 const mapServices = require('../services/map.services');
 const crypto = require('crypto');
+const { sendMessageToSocket } = require('../socket');
+const rideModel = require("../models/ride.model") ;
+
 
 
  
@@ -60,10 +63,6 @@ module.exports.createRide = async (req, res) => {
     if(!validate){
         return res.status(404).json({message: "Invalid ridedetails"});
     }
-    // let fare = await calculateFare({pickup, destination, vehicleType})
-    // console.log("returned value",fare)
-    // fare = Math.round(fare)
-    // console.log("fair and lovely",fare)
     const userId = req.user.id;
     const otp = generateOTP(4);
     const ride = await ridemodel.create({
@@ -74,7 +73,23 @@ module.exports.createRide = async (req, res) => {
         fare,
         otp
     });
+    console.log("Ride before populate:", ride);
+    const populatedRide = await ride.populate('userId');
+    console.log("Ride after populate:", populatedRide);
     res.status(201).json({ride});
-}
 
+    ride.otp = undefined;
+
+    const {lat,lng} = await mapServices.getCoordinates(pickup);
+    console.log("ltdAndlng:",lat,lng)
+    const filteredCaptains = await mapServices.getnearbyCaptains(lat,lng,distance= 5);
+    console.log("filteredCaptains",filteredCaptains)
+
+   const event = "new-ride";
+   const message = await ride.populate('userId');
+    filteredCaptains.map(captain => {
+        const socketId = captain.socketId ;
+        sendMessageToSocket({socketId,event,message}) ;
+    });
+}
 

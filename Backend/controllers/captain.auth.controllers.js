@@ -3,6 +3,8 @@ const bcrypt = require('bcrypt');
 const captainModel = require('../models/captain.model');
 const { validationResult } = require('express-validator');
 const blacklistModel = require('../models/blacklist.token');
+const {sendMessageToSocket} = require("../socket");
+const rideModel = require("../models/ride.model") ;
 
 module.exports.registerCaptain = async (req, res) => {
     const errors = validationResult(req);
@@ -83,5 +85,53 @@ module.exports.logoutCaptain = async (req, res) => {
     }
     catch (err) {
         res.status(500).json({ errors: [{ msg: err.message }] });
+    }
+};
+
+module.exports.acceptRide = async (req, res) => {
+    try {
+        const newRide = req.body; // Extract ride details from the request body
+        console.log("Received newRide details:", newRide);
+
+        const captainId = req.captain.id; // Extract captain ID from the authenticated captain
+        const rideId = newRide._id; // Extract ride ID from the request body
+
+        if (!rideId) {
+            return res.status(400).json({ message: "Ride ID is required" });
+        }
+
+        // Update the ride with the captain ID and status
+        const ride = await rideModel.findByIdAndUpdate(
+            rideId,
+            {
+                $set: {
+                    status: "Accepted",
+                    captainId: captainId,
+                },
+            },
+            { new: true } // Return the updated document
+        )
+            .populate("userId") // Populate user details
+            .populate("captainId"); // Populate captain details
+
+        if (!ride) {
+            return res.status(404).json({ message: "Ride not found" });
+        }
+
+        // Notify the user about the accepted ride
+        const event = "ride-accepted";
+        const message = ride;
+        const socketId = ride.userId?.socketId; // Ensure userId and socketId exist
+
+        if (socketId) {
+            sendMessageToSocket({ socketId, event, message });
+        } else {
+            console.log("User socketId not found, unable to send notification.");
+        }
+
+        return res.status(201).json({ message: "Ride accepted successfully", ride });
+    } catch (err) {
+        console.error("Error in acceptRide:", err.message);
+        return res.status(500).json({ message: "Internal server error", error: err.message });
     }
 };

@@ -2,7 +2,7 @@ import React from 'react'
 import { FaLocationDot } from 'react-icons/fa6'
 import { FaRegCircle } from "react-icons/fa";
 
-const RideDetails = ({ setridedetails ,setconfirmtion,confirmtion,ridedetails}) => {
+const RideDetails = ({ setridedetails ,setconfirmtion,confirmtion,ridedetails,newRide}) => {
     function handleClick(){
         setconfirmtion(true)
         setridedetails(false)
@@ -17,7 +17,7 @@ const RideDetails = ({ setridedetails ,setconfirmtion,confirmtion,ridedetails}) 
             <div className='utility-flex user-ride'>
                 <div className='utility-flex user-info'>
                     <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTqb3ltH2zwdPZqPg3H_6v5uEb4kjPF2PXfgiUDiWJT3vu1XNhFp29qVyQZ5y70AtYR7K8&usqp=CAU" alt="" />
-                    <h3>Bharath Bolloju</h3>
+                    <h3>{newRide?.userId.fullname.firstname + " "+ newRide?.userId.fullname.lastname}</h3>
                 </div>
                 <h3>
                     2.3 KM
@@ -26,15 +26,15 @@ const RideDetails = ({ setridedetails ,setconfirmtion,confirmtion,ridedetails}) 
             <div className='suggest no-border content-start' >
                 <FaRegCircle className='imgloc img-loc' />
                 <div>
-                    <p><b>3-5/17/D bharath nagar Ramanthapur</b></p>
-                    <p className='para'>Medchal, Telangana</p>
+                    <p><b>{newRide?.pickup}</b></p>
+                    {/* <p className='para'>Medchal, Telangana</p> */}
                 </div>
             </div>
             <div className='suggest no-border content-start' >
                 <FaLocationDot className='imgloc' />
                 <div>
-                    <p><b>3-5/17/D bharath nagar Ramanthapur</b></p>
-                    <p className='para'>Medchal, Telangana</p>
+                    <p><b>{newRide?.destination}</b></p>
+                    {/* <p className='para'>Medchal, Telangana</p> */}
                 </div>
             </div>
             <div className="buttons">
