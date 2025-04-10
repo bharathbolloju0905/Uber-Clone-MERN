@@ -19,7 +19,7 @@ const LookingForVehicle = ({fare, img}) => {
                 <h2>${fare}</h2>
             </div>
             <div>
-                <Link to="/" className="confirm">Cancel Booking Ride</Link>
+                <Link to="/main" className="confirm">Cancel Booking Ride</Link>
             </div>
         </>
     )

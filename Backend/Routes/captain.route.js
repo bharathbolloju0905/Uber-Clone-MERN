@@ -13,6 +13,10 @@ router.get("/profile",authmiddleware.authenticatedCaptain,authController.getProf
 
 router.post("/accept-ride",authmiddleware.authenticatedCaptain, authController.acceptRide) ;
 
+router.post("/starting-ride",authmiddleware.authenticatedCaptain, authController.startingRide) ;
+router.post("/ending-ride",authmiddleware.authenticatedCaptain, authController.endingRide) ;
+
+
 
 router.get("/logout",authController.logoutCaptain);
 

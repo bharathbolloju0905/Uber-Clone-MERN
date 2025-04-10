@@ -3,10 +3,33 @@ import { TbArrowCurveRight } from "react-icons/tb"
 import { TbArrowLeft } from "react-icons/tb"
 import { TbArrowUpBar ,TbArrowCurveLeft,TbUTurnRight} from "react-icons/tb"
 import { Link } from "react-router-dom"
+import {useLocation} from 'react-router-dom'
+import toast from 'react-hot-toast'
+import { useNavigate } from 'react-router-dom'
+import axios from 'axios'
+import LiveTracking from '../component/LiveTracking';
+
 const Pickup = () => {
-    const [showdetails, setshowdetails] = useState(false)
-    function handleClick() {
-        console.log("Height is increasing")
+    const [showdetails, setshowdetails] = useState(false) ;
+    const location = useLocation()
+    const ride = location.state?.ride ;
+    console.log("in pcup ride:",ride)
+    const navigate = useNavigate()
+async function handleEndRide() {
+        
+        const response = await axios.post('http://localhost:3000/captains/ending-ride', { ride }, {
+            headers: {
+                Authorization: `Bearer ${localStorage.getItem('token')}`
+            }
+        });
+        if (response.status === 200) {
+            console.log("response from ending ride:", response.data);
+            navigate('/cap-main');
+            toast.sucess("Ride ended successfully, Have a nice day");
+        }
+        else {
+            console.log("error in ending ride:", response.data);
+        }
     }
     return (
         <div className='main-container '>
@@ -15,7 +38,7 @@ const Pickup = () => {
             </div>
             <div className='map-container mt-5'>
                 <div>
-                    <img className='img' src="./images/map.png" alt="map" />
+                    <LiveTracking />
                 </div>
                 <div className='navigations'>
                     <TbArrowCurveRight className='icon-right' />
@@ -27,7 +50,7 @@ const Pickup = () => {
                     <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTqb3ltH2zwdPZqPg3H_6v5uEb4kjPF2PXfgiUDiWJT3vu1XNhFp29qVyQZ5y70AtYR7K8&usqp=CAU" alt="user-img" />
                     <div className='utility-flex'>
                         <p>pickpup location</p>
-                        <h1>Captain Jack Sparrow</h1>
+                        <h1>{ride?.userId.fullname.firstname+" "+ ride?.userId.fullname.lastname}</h1>
                     </div>
 
                 </div>
@@ -44,11 +67,11 @@ const Pickup = () => {
                         </div>
                         <div className='utility-flex details-trip'>
                             <p>Cost</p>
-                            <h1>$401</h1>
+                            <h1>${ride?.fare}</h1>
                         </div>
                     </div>
                     <div>
-                        <Link to="/cap-main" className="end-ride-btn">End the Ride</Link>
+                        <button onClick={handleEndRide} className="end-ride-btn">End the Ride</button>
                     </div>
                 </div>
                 <div>

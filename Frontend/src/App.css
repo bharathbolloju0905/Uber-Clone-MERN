@@ -150,7 +150,11 @@ h1{
 .uber-logo{
     position: absolute;
     margin: 10px;
+    z-index:1 ;
     
+}
+.mode ,.logo{
+    z-index:1;
 }
 .logo{
     width:100px;
@@ -181,7 +185,7 @@ h1{
     align-items: center;
     gap: 10px;
     background-color: black;
-   
+   z-index: 1;
  
     
 }
@@ -302,8 +306,8 @@ span p{
     justify-content: start;
     gap: 10px;
     padding-top: 2rem;
-    display: none;
-
+    z-index: 1;
+   display:none ;
 }
 .vehicle-details img{
     height: 110px;
@@ -323,9 +327,20 @@ span p{
     font-size: 20px;
 }
 .ride-accepted{
-    display: none;
+    width: 100vw;
+    padding: 10px;
+    background-color: black;
+    position: absolute;
+    bottom: 0;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    justify-content: start;
+    gap: 10px;
+    padding-top: 2rem;
     height: 60vh;
     gap: 2rem;
+    z-index: 1;
 }
 .info{
     width: 100%;
@@ -339,6 +354,7 @@ span p{
     align-items: center;
     position: absolute;
     width: 90vw;
+    z-index:1;
 }
 .captain-mode-toggler{
     height: 40px;
@@ -467,6 +483,7 @@ span p{
     bottom: 0;
     background: #000;  
     padding: 10px;
+    z-index: 1;
   
 }.img-loc{
     width: 25px;
@@ -485,7 +502,12 @@ span p{
     display: flex;
     gap:10px ;
     flex-direction: column;
+    z-index:1;
+    position: relative;
    
+}
+.zee{
+    z-index: 2;
 }
 .no-border{
     border: none;
@@ -498,6 +520,7 @@ span p{
     width: 100%;
     padding: 10px 14px;
     display: inline-flex;
+
     text-decoration: none;
    justify-content: center;
    align-items: center;

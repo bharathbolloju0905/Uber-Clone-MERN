@@ -7,8 +7,7 @@ import axios from 'axios'; // Ensure axios is imported
 import toast from 'react-hot-toast';
 
 
-
-const VehicleDetial = ({ LookingVehicle, VehicleDetials, img, destination, fare, source, selectedVehicle }) => {
+const VehicleDetial = ({ LookingVehicle, VehicleDetialsRef, img, destination, fare, source, selectedVehicle }) => {
     const [loading, setLoading] = useState(false);
     async function handleClick(e) {
         // e.preventDefault();
@@ -30,8 +29,8 @@ const VehicleDetial = ({ LookingVehicle, VehicleDetials, img, destination, fare,
 
          toast.success("Looking For Captains");
         LookingVehicle.current.style.display = "flex";
-        VehicleDetials.current.style.display = "none";
-        console.log(ride)
+        VehicleDetialsRef.current.style.display = "none";
+        
     }
       catch (error) {
         toast.error(source)

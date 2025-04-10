@@ -3,7 +3,7 @@ import { FaLocationDot } from 'react-icons/fa6'
 import { FaRegCircle } from "react-icons/fa";
 import {Link} from 'react-router-dom'
 import axios from 'axios'
-const CaptainAcceptingRide = ({ setridedetails ,setconfirmtion,confirmtion,ridedetails, newRide}) => {
+const CaptainAcceptingRide = ({ setridedetails ,setconfirmtion,confirmtion,ridedetails, newRide,setStartRide}) => {
     function handleClose(){
         setconfirmtion(false)
         setridedetails(false)
@@ -12,6 +12,8 @@ async function handleConfirmation(){
         console.log("confirming accepting the ride");
         console.log("newride:  ",newRide);
         setconfirmtion(true)
+        setridedetails(false)
+        setStartRide(true)
        try{
         const response = await axios.post("http://localhost:3000/captains/accept-ride",newRide, {
             headers:{
@@ -51,7 +53,7 @@ async function handleConfirmation(){
                     </div>
                 </div>
                 <div className="buttons">
-                    <div className='ride-btn accept-confirm' onClick={handleConfirmation}><Link to="/user-pickup">Cofirm Accepting the Ride</Link></div>
+                    <div className='ride-btn accept-confirm' onClick={handleConfirmation}>Cofirm Accepting the Ride</div>
                     <div className='ride-btn coloring' onClick={handleClose } >Cancel the Ride</div>
                 </div>
             </div>

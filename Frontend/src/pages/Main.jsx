@@ -7,7 +7,8 @@ import LookingForVehicle from '../component/LookingForVehicle';
 import RideAccepted from '../component/RideAccepted';
 import axios from 'axios';
 import { useSocketContext } from '../context/SocketContext';
-import {useUserContext} from '../context/userContext';
+import { useUserContext } from '../context/userContext';
+import LiveTracking from '../component/LiveTracking';
 const Main = () => {
   const inputContainer = useRef(null);
   const suggestions = useRef(null);
@@ -21,7 +22,8 @@ const Main = () => {
   const [suggestionsList, setSuggestionsList] = useState([]);
   const [activeInput, setActiveInput] = useState(null);
   const { socket, receiveMessage, sendMessage } = useSocketContext()
-  const {user} = useUserContext()
+  const [rideAccepted, setrideAccepted] = useState(null);
+  const { user } = useUserContext()
   const [fare, setFare] = useState({
     car: 0,
     auto: 0,
@@ -44,14 +46,18 @@ const Main = () => {
     }
   }, [togglePannel]);
 
-  useEffect(()=>{
-    const data = {
-      typeOfUser:"user",
-      userId: user._id
+  useEffect(() => {
+    if (user) {
+      console.log("user is joined")
+      const data = {
+        typeOfUser: "user",
+        userId: user?._id
+      }
+      sendMessage('join', data)
     }
-    sendMessage('join', data)
-  },[])
+  }, [user, sendMessage])
 
+  console.log(rideAccepted &&"hii")
   const handleInputChange = async (e, setInput) => {
     const value = e.target.value;
     setInput(value);
@@ -61,8 +67,8 @@ const Main = () => {
         const response = await axios.get(`http://localhost:3000/maps/get-suggestions?input=${value}`, {
           headers: { 'Authorization': `Bearer ${token}` }
         }
-      );
-      
+        );
+
         setSuggestionsList(response.data);
       } catch (error) {
         console.log("error in fetching suggestions")
@@ -76,23 +82,47 @@ const Main = () => {
   useEffect(() => {
     receiveMessage("ride-accepted", (data) => {
       console.log("Ride accepted:", data);
-      
-    })
-  });
+      setrideAccepted(data);
+
+      // Hide the VehicleDetials ref when the ride is accepted
+      if (VehicleDetials.current) {
+        VehicleDetials.current.style.display = "none";
+      }
+      LookingVehicle.current.style.display = "none";  
+    });
+
+    receiveMessage("ride-completed", (data) => {
+      console.log("Ride completed:", data);
+      setrideAccepted(null);
+      setSource('');
+      setDestination('');
+      setSuggestionsList([]);
+      setvehiclepanel(false);
+      setSelectedVehicle(null);
+
+      // Reset the input container and hide suggestions
+      inputContainer.current.style.height = "fit-content";
+      inputContainer.current.style.top = "unset";
+      inputContainer.current.style.bottom = "3rem";
+      suggestions.current.style.display = "none";
+ 
+
+      // Hide the VehicleDetials ref when the ride is completed
+      LookingVehicle.current.style.display = "none";  
+    });
+  }, [receiveMessage]);
 
   const handleSuggestionClick = (suggestion) => {
     if (activeInput === 'source') {
       setSource(suggestion.description);
     } else if (activeInput === 'destination') {
       setDestination(suggestion.description);
+      
     }
     settogglePannel(false);
   };
 
-  // const handleSubmit = (e) => {
-  //   e.preventDefault();
-  //   // Handle form submission
-  // };
+
   async function handleNext() {
 
     if (!source || !destination) {
@@ -119,7 +149,9 @@ const Main = () => {
       </div>
       <div className='map-container'>
         <div>
-          <img className='img' src="./images/map.png" alt="map" />
+          {/* <img className='img' src="./images/map.png" alt="map" />
+           */}
+           <LiveTracking />
         </div>
       </div>
       <div ref={inputContainer} className='input-container'>
@@ -155,22 +187,27 @@ const Main = () => {
       </div>
       {vehiclepanel && <div className="choosing-vehicle" ref={VehicleRef}>
         <IoIosArrowDown className='toggler' onClick={() => setvehiclepanel(false)} />
-        <Vehicle img={"/images/car.png"} mins={"2 mins away"} price={fare.car} capacity={4} selectedveh={VehicleDetials} VehicleRef={VehicleRef}  type={"car"}  setSelectedVehicle={setSelectedVehicle}/>
-        <Vehicle img={"/images/auto.png"} mins={"5 mins away"} price={fare.auto} capacity={2} selectedveh={VehicleDetials} VehicleRef={VehicleRef}  type={"auto"} setSelectedVehicle={setSelectedVehicle}/>
-        <Vehicle img={"/images/bike.png"} mins={"3 mins away"} price={fare.bike} capacity={1} selectedveh={VehicleDetials} VehicleRef={VehicleRef}  type={"bike"} setSelectedVehicle={setSelectedVehicle}/>
+        <Vehicle img={"/images/car.png"} mins={"2 mins away"} price={fare.car} capacity={4} selectedveh={VehicleDetials} VehicleRef={VehicleRef} type={"car"} setSelectedVehicle={setSelectedVehicle} />
+        <Vehicle img={"/images/auto.png"} mins={"5 mins away"} price={fare.auto} capacity={2} selectedveh={VehicleDetials} VehicleRef={VehicleRef} type={"auto"} setSelectedVehicle={setSelectedVehicle} />
+        <Vehicle img={"/images/bike.png"} mins={"3 mins away"} price={fare.bike} capacity={1} selectedveh={VehicleDetials} VehicleRef={VehicleRef} type={"bike"} setSelectedVehicle={setSelectedVehicle} />
       </div>}
 
-      <div className="vehicle-details" ref={VehicleDetials}>  
+      <div className="vehicle-details" ref={VehicleDetials}>
         {console.log(selectedVehicle)}
-        <VehicleDetial LookingVehicle={LookingVehicle} VehicleDetials={VehicleDetials} img={`/images/${selectedVehicle}.png`} destination={destination} fare={fare[selectedVehicle]} selectedVehicle={selectedVehicle} source={source}/>
+        <VehicleDetial LookingVehicle={LookingVehicle} VehicleDetialsRef={VehicleDetials} img={`/images/${selectedVehicle}.png`} destination={destination} fare={fare[selectedVehicle]} selectedVehicle={selectedVehicle} source={source} />
       </div>
-      <div className="vehicle-details looking-for-vehicle" ref={LookingVehicle} >
-        <LookingForVehicle fare={fare[selectedVehicle]} img={`/images/${selectedVehicle}.png`} source={source} selectedVehicle={selectedVehicle}/>
+      <div className="vehicle-details looking-for-vehicle" ref={LookingVehicle}>
+        <LookingForVehicle fare={fare[selectedVehicle]} img={`/images/${selectedVehicle}.png`} source={source} selectedVehicle={selectedVehicle} />
       </div>
-
-      <div className='vehicle-details ride-accepted'>
-        <RideAccepted />
-      </div>
+        {console.log(rideAccepted)}
+      {rideAccepted && (
+        <>
+          {console.log("Rendering RideAccepted component with:", rideAccepted)}
+          <div className=' ride-accepted'>
+            <RideAccepted rideAccepted={rideAccepted} />
+          </div>
+        </>
+      )}
     </div>
   )
 }

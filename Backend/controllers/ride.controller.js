@@ -78,7 +78,7 @@ module.exports.createRide = async (req, res) => {
     console.log("Ride after populate:", populatedRide);
     res.status(201).json({ride});
 
-    ride.otp = undefined;
+    // ride.otp = undefined;
 
     const {lat,lng} = await mapServices.getCoordinates(pickup);
     console.log("ltdAndlng:",lat,lng)
@@ -93,3 +93,8 @@ module.exports.createRide = async (req, res) => {
     });
 }
 
+module.exports.getRideDetails = async(req,res)=>{
+    const rideId = req.params.rideid ;
+    const ride = await rideModel.findById(rideId);
+    return res.status(201).json({message:"successfull",ride:ride});
+}

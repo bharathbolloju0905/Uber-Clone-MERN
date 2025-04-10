@@ -110,9 +110,11 @@ module.exports.acceptRide = async (req, res) => {
                 },
             },
             { new: true } // Return the updated document
-        )
+        )   .select('+otp')
             .populate("userId") // Populate user details
             .populate("captainId"); // Populate captain details
+
+            console.log(ride)
 
         if (!ride) {
             return res.status(404).json({ message: "Ride not found" });
@@ -122,16 +124,84 @@ module.exports.acceptRide = async (req, res) => {
         const event = "ride-accepted";
         const message = ride;
         const socketId = ride.userId?.socketId; // Ensure userId and socketId exist
+        
+        if (socketId) {
+            sendMessageToSocket({ socketId, event, message });
+            return res.status(201).json({ message: "Ride accepted successfully", ride });
+        } else {
+            console.log("User socketId not found, unable to send notification.");
+            return res.status(500).json({message: "Ride accepted, but unable to notify user."});
+        }
 
+    } catch (err) {
+        console.error("Error in acceptRide:", err.message);
+        return res.status(500).json({ message: "Internal server error", error: err.message });
+    }
+};
+
+
+module.exports.startingRide = async (req, res) => {
+    try {
+        const { newRide, otp } = req.body;
+        console.log(otp, "otp in starting ride")
+
+        if (!newRide || !otp) {
+            return res.status(400).json({ error: "OTP and ride details are required" });
+        }
+
+        const ride = await rideModel.findById(newRide._id).select("+otp");
+        console.log(ride.otp,"actual value")
+
+        if (!ride) {
+            return res.status(404).json({ error: "Ride not found" });
+        }
+          
+        if (String(otp) === String(ride.otp)) {
+            const updatedRide = await rideModel.findByIdAndUpdate(
+                newRide._id,
+                { status: "ongoing" },
+                { new: true }
+            ).populate("userId captainId")
+            return res.status(200).json({ message: "Ride started successfully", ride: updatedRide });
+        } else {
+            return res.status(400).json({ error: "Invalid OTP" });
+        }
+    } catch (err) {
+        console.error("Error in startingRide:", err.message);
+        return res.status(500).json({ error: "Unable to start ride", details: err.message });
+    }
+};
+
+module.exports.endingRide = async (req, res) => {
+    try {
+        const { ride } = req.body;
+        console.log(ride,"ride id in ending ride")
+        const rideId = ride._id ;
+        if (!rideId) {
+            return res.status(400).json({ error: "Ride ID is required" });
+        }
+
+        const updatedRide = await rideModel.findByIdAndUpdate(
+            rideId,
+            { status: "completed" },
+            { new: true }
+        ).populate("userId captainId");
+
+        if (!updatedRide) {
+            return res.status(404).json({ error: "Ride not found" });
+        }
+        const event = "ride-completed" ;
+        const message = updatedRide ;
+        const socketId = updatedRide.userId?.socketId; // Ensure userId and socketId exist
         if (socketId) {
             sendMessageToSocket({ socketId, event, message });
         } else {
             console.log("User socketId not found, unable to send notification.");
         }
 
-        return res.status(201).json({ message: "Ride accepted successfully", ride });
+        return res.status(200).json({ message: "Ride ended successfully", ride: updatedRide });
     } catch (err) {
-        console.error("Error in acceptRide:", err.message);
-        return res.status(500).json({ message: "Internal server error", error: err.message });
+        console.error("Error in endingRide:", err.message);
+        return res.status(500).json({ error: "Unable to end ride", details: err.message });
     }
 };

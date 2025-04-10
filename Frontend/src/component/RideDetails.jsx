@@ -2,7 +2,7 @@ import React from 'react'
 import { FaLocationDot } from 'react-icons/fa6'
 import { FaRegCircle } from "react-icons/fa";
 
-const RideDetails = ({ setridedetails ,setconfirmtion,confirmtion,ridedetails,newRide}) => {
+const RideDetails = ({ setridedetails ,setconfirmtion,newRide}) => {
     function handleClick(){
         setconfirmtion(true)
         setridedetails(false)
@@ -45,4 +45,4 @@ const RideDetails = ({ setridedetails ,setconfirmtion,confirmtion,ridedetails,ne
     )
 }
 
-export default RideDetails
+export default RideDetails ;

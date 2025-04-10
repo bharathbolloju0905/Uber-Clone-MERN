@@ -1,6 +1,5 @@
-import React, { useState, useEffect } from 'react'
-import { BsToggle2Off } from "react-icons/bs";
-import { BsToggle2On } from "react-icons/bs";
+import React, { useState, useEffect } from 'react';
+import { BsToggle2Off, BsToggle2On } from "react-icons/bs";
 import { FaRegMoon } from "react-icons/fa";
 import { SlCursor } from "react-icons/sl";
 import { CiClock2 } from "react-icons/ci";
@@ -10,16 +9,22 @@ import RideDetails from '../component/RideDetails';
 import CaptainAcceptingRide from '../component/CaptainAcceptingRide';
 import { useCaptainContext } from '../context/captainContext';
 import { useSocketContext } from '../context/SocketContext';
+import StartingRide from '../component/StartingRide';
+import LiveTracking from '../component/LiveTracking';
+
 
 const CaptainMain = () => {
-  const { sendMessage,receiveMessage } = useSocketContext();
+  const { sendMessage, receiveMessage } = useSocketContext();
   const { captain } = useCaptainContext();
 
   const [captainStatus, setCaptainStatus] = useState(false);
   const [rideDetails, setRideDetails] = useState(false);
   const [confirmation, setConfirmation] = useState(false);
-  const [newride, setnewride] = useState(null);
+  const [newRide, setNewRide] = useState(null);
+  const [location, setLocation] = useState(null);
+  const [startRide, setStartRide] = useState(false);
 
+  // Join the socket room when the captain is available
   useEffect(() => {
     if (captain) {
       const data = {
@@ -30,68 +35,98 @@ const CaptainMain = () => {
     }
   }, [captain, sendMessage]);
 
-  useEffect(() => {
-    const updateLocation = () => {
-      if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition((position) => {
+  // Update captain's location when triggered by a user gesture
+  const updateLocation = () => {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
           const { latitude, longitude } = position.coords;
+          setLocation({ latitude, longitude });
           const captainId = captain._id;
-          sendMessage("update-captain-location", { captainId ,location:{ltd: latitude, lng: longitude} });
-        });
-      }
-    };
+          sendMessage("update-captain-location", {
+            captainId,
+            location: { ltd: latitude, lng: longitude },
+          });
+        },
+        (error) => {
+          console.error("Error getting location:", error);
+        }
+      );
+    } else {
+      console.error("Geolocation is not supported by this browser.");
+    }
+  };
 
-    const intervalId = setInterval(updateLocation, 10000); // Call every 10 seconds
-
-    return () => clearInterval(intervalId); // Cleanup on component unmount
-  }, [sendMessage]);
-  
-
-  useEffect(() => {
-  receiveMessage("new-ride", (ride) => {
-    console.log("ride",ride)
-    setnewride(ride);
-
-  })
-  }, [receiveMessage,captain]);
-
+  // Trigger location updates only when the captain goes online
   const handleClick = () => {
     setCaptainStatus(!captainStatus);
-    setRideDetails(!rideDetails);
+    // setRideDetails(!rideDetails);
+
+    if (!captainStatus) {
+      // Request location when the captain goes online
+      updateLocation();
+    }
   };
+
+  // Listen for new ride events
+  useEffect(() => {
+    receiveMessage("new-ride", (ride) => {
+      console.log("New ride received:", ride);
+      setNewRide(ride);
+    });
+  }, [receiveMessage]);
 
   if (!captain) {
     return <p>Loading...</p>; // Handle case where captain data is not yet available
   }
 
   return (
-    <div className='main-container'>
-      <div className='captain-nav'>
-        <div >
-          <img className="logo" src="/images/uber-logo.png" alt="map" />
+    <div className="main-container">
+      {/* Navigation Bar */}
+      <div className="captain-nav">
+        <div>
+          <img className="logo" src="/images/uber-logo.png" alt="Uber Logo" />
         </div>
         <h2>{captainStatus ? "Online" : "Offline"}</h2>
         <div onClick={handleClick}>
-          {captainStatus ? <BsToggle2On className='captain-mode-toggler' /> : <BsToggle2Off className='captain-mode-toggler' />}
+          {(captainStatus ) ? (
+            <BsToggle2On className="captain-mode-toggler" />
+          ) : (
+            <BsToggle2Off className="captain-mode-toggler" />
+          )}
         </div>
       </div>
-      {!captainStatus && <div className='utility-flex mode'>
-        <FaRegMoon className='captain-mode-toggler moon' />
-        <div>
-          <h2>You're Offline</h2>
-          <p>Change  the mode to receive the Bookings</p>
-        </div>
-      </div>}
-      <div className='map-container'>
-        <div>
-        <img className='img' src="./images/map.png" alt="map" /></div>
-        <SlCursor className='navigator' />
-      </div>
-      <div className='captain-details'>
-        <div className="utility-flex img" >
-          <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTqb3ltH2zwdPZqPg3H_6v5uEb4kjPF2PXfgiUDiWJT3vu1XNhFp29qVyQZ5y70AtYR7K8&usqp=CAU" alt="captain-img" />
+
+      {/* Offline Mode Message */}
+      {!captainStatus && (
+        <div className="utility-flex mode">
+          <FaRegMoon className="captain-mode-toggler moon" />
           <div>
-            <h3 className='font-moderate'>{ captain?.fullname.firstname + " " + captain?.fullname.lastname}</h3>
+            <h2>You're Offline</h2>
+            <p>Change the mode to receive bookings</p>
+          </div>
+        </div>
+      )}
+
+      {/* Map Section */}
+      <div className="map-container">
+        <div>
+          <LiveTracking />
+        </div>
+        <SlCursor className="navigator" />
+      </div>
+
+      {/* Captain Details */}
+      <div className="captain-details">
+        <div className="utility-flex img">
+          <img
+            src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTqb3ltH2zwdPZqPg3H_6v5uEb4kjPF2PXfgiUDiWJT3vu1XNhFp29qVyQZ5y70AtYR7K8&usqp=CAU"
+            alt="Captain"
+          />
+          <div>
+            <h3 className="font-moderate">
+              {captain?.fullname.firstname + " " + captain?.fullname.lastname}
+            </h3>
             <p>Expert driver</p>
           </div>
           <div>
@@ -99,37 +134,59 @@ const CaptainMain = () => {
             <p>Earned</p>
           </div>
         </div>
-        <div className='captain-history'>
-            <div className='icon'>
-              <CiClock2 className='captain-mode-toggler' />
-              <h2>4.9</h2>
-              <p>Hours Spent</p>
-            </div>
-            <div className='icon'>
-              <MdSpeed className='captain-mode-toggler' />
-              <h2>40</h2>
-              <p>Avg Speed</p>
-            </div>
-            <div className='icon'>
-              <RxRotateCounterClockwise className='captain-mode-toggler' />
-              <h2>17</h2>
-              <p>Rides Completed</p>
-            </div>
+        <div className="captain-history">
+          <div className="icon">
+            <CiClock2 className="captain-mode-toggler" />
+            <h2>4.9</h2>
+            <p>Hours Spent</p>
+          </div>
+          <div className="icon">
+            <MdSpeed className="captain-mode-toggler" />
+            <h2>40</h2>
+            <p>Avg Speed</p>
+          </div>
+          <div className="icon">
+            <RxRotateCounterClockwise className="captain-mode-toggler" />
+            <h2>17</h2>
+            <p>Rides Completed</p>
+          </div>
         </div>
-
       </div>
-      {rideDetails && (
-        <div className='ride-details '>
-          <RideDetails setridedetails={setRideDetails} ridedetails={rideDetails}  confirmtion={confirmation} setconfirmtion={setConfirmation} newRide = {newride} />
+
+      {/* Ride Details */}
+      {(captainStatus && newRide) && (
+        <div className="ride-details">
+          <RideDetails
+            setridedetails={setRideDetails}
+            ridedetails={rideDetails}
+            confirmtion={confirmation}
+            setconfirmtion={setConfirmation}
+            newRide={newRide}
+          />
         </div>
       )}
-         {confirmation && 
-         (<div className='ride-details hight-full'>
-         <CaptainAcceptingRide setridedetails={setRideDetails} ridedetails={rideDetails}  confirmtion={confirmation} setconfirmtion={setConfirmation} newRide = {newride}/>
-   </div>)}
+
+      {/* Ride Confirmation */}
+      {confirmation && (
+        <div className="ride-details hight-full">
+          <CaptainAcceptingRide
+            setridedetails={setRideDetails}
+            ridedetails={rideDetails}
+            confirmtion={confirmation}
+            setconfirmtion={setConfirmation}
+            newRide={newRide}
+            setStartRide = {setStartRide}
+          />
+        </div>
+      )}
+
+{startRide && <div className="ride-details hight-full">
+           
+        <StartingRide setridedetails={setRideDetails} setconfirmtion={setConfirmation} setStartRide = {setStartRide} newRide={newRide} />
+  </div>}
 
     </div>
-  )
-}
+  );
+};
 
 export default CaptainMain;
