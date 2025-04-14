@@ -2,7 +2,7 @@ import React from 'react'
 import { FaLocationDot } from 'react-icons/fa6'
 import axios from "axios"
 
-const RideAccepted = ({rideAccepted}) => {
+const RideAccepted = ({rideAccepted,setRideAccepted}) => {
     //   (async()=>{
     //     const rideId = rideAccepted._id ;
     // const res =  await axios.get(`http://localhost:3000/rides/getdetails/${rideId}`,{
@@ -12,6 +12,10 @@ const RideAccepted = ({rideAccepted}) => {
     // });
     // console.log(res.data)
     //   })();
+    function handleCancel(){
+     
+      setRideAccepted(false)
+  }
 
   return (
     <>

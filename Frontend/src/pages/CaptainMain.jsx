@@ -11,6 +11,7 @@ import { useCaptainContext } from '../context/captainContext';
 import { useSocketContext } from '../context/SocketContext';
 import StartingRide from '../component/StartingRide';
 import LiveTracking from '../component/LiveTracking';
+import { useLocation } from 'react-router-dom';
 
 
 const CaptainMain = () => {
@@ -23,8 +24,16 @@ const CaptainMain = () => {
   const [newRide, setNewRide] = useState(null);
   const [location, setLocation] = useState(null);
   const [startRide, setStartRide] = useState(false);
+  const loc = useLocation() ;
 
+  const capstat = loc.state?.activateCaptain
   // Join the socket room when the captain is available
+
+  useEffect(()=>{
+    if(capstat){
+      setCaptainStatus(true)
+    }
+  },[loc.state])
   useEffect(() => {
     if (captain) {
       const data = {
@@ -68,11 +77,29 @@ const CaptainMain = () => {
     }
   };
 
-  // Listen for new ride events
   useEffect(() => {
+    const audio = new Audio("/notification.mp3"); // Load the sound file from the public folder
+
+    // Listen for new ride events
     receiveMessage("new-ride", (ride) => {
       console.log("New ride received:", ride);
       setNewRide(ride);
+
+      // Play the notification sound
+      audio.play();
+    });
+
+    receiveMessage("ride-completed", (data) => {
+      console.log("Ride completed:", data);
+
+      // Play the notification sound
+      audio.play();
+
+      // Reset the ride state
+      setNewRide(null);
+      setRideDetails(false);
+      setConfirmation(false);
+      setStartRide(false);
     });
   }, [receiveMessage]);
 

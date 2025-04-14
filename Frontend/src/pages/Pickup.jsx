@@ -13,24 +13,23 @@ const Pickup = () => {
     const [showdetails, setshowdetails] = useState(false) ;
     const location = useLocation()
     const ride = location.state?.ride ;
+    
     console.log("in pcup ride:",ride)
     const navigate = useNavigate()
 async function handleEndRide() {
-        
-        const response = await axios.post('http://localhost:3000/captains/ending-ride', { ride }, {
-            headers: {
-                Authorization: `Bearer ${localStorage.getItem('token')}`
-            }
-        });
-        if (response.status === 200) {
-            console.log("response from ending ride:", response.data);
-            navigate('/cap-main');
-            toast.sucess("Ride ended successfully, Have a nice day");
+    const response = await axios.post('http://localhost:3000/captains/ending-ride', { ride }, {
+        headers: {
+            Authorization: `Bearer ${localStorage.getItem('token')}`
         }
-        else {
-            console.log("error in ending ride:", response.data);
-        }
+    });
+    if (response.status === 200) {
+        console.log("response from ending ride:", response.data);
+        navigate('/cap-main', { state: { activateCaptain: true } }); // Pass state to activate captain
+        toast.success("Ride ended successfully, Have a nice day");
+    } else {
+        console.log("error in ending ride:", response.data);
     }
+}
     return (
         <div className='main-container '>
             <div className='uber-logo'>

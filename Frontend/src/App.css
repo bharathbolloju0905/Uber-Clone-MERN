@@ -76,7 +76,9 @@
     width: 150px;
     
 }
-
+.w-full{
+    width:100vw;
+}
 .h-w-100{
     width: 100vw;
     height: 100vh;
@@ -199,8 +201,12 @@ h1{
     background: #000;
 }
 .imgloc{
-    width: 35px;
+    width: 35px !important; 
     height: 35px;
+}
+.sugg{
+    overflow: scroll;
+    height: 100%;
 }
 .suggest{
     display: flex;
@@ -213,8 +219,8 @@ h1{
     cursor: pointer;
     border:1px solid rgb(126, 125, 125) ;
    width:100%;
-
-   overflow-y: hidden;
+    height: 50px;
+ 
 }
 .suggestions{
     display: none;

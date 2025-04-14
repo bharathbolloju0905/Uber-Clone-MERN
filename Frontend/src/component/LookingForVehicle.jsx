@@ -1,7 +1,12 @@
 import React from 'react'
 import { FaLocationDot,FaUser } from 'react-icons/fa6'
 import { Link } from 'react-router-dom'
-const LookingForVehicle = ({fare, img}) => {
+const LookingForVehicle = ({fare, img,LookingVehicle,handleCancel,setvehiclepanel}) => {
+    function handleCancel(){
+        console.log("vehicleDetialsref")
+        LookingVehicle.current.style.display = "none"
+        setvehiclepanel(false)
+    }
     return (
         <>
         <h1>Looking for a ride</h1>
@@ -18,8 +23,8 @@ const LookingForVehicle = ({fare, img}) => {
                 </div>
                 <h2>${fare}</h2>
             </div>
-            <div>
-                <Link to="/main" className="confirm">Cancel Booking Ride</Link>
+            <div >
+                <button className="confirm" onClick={handleCancel}>Cancel Booking Ride</button>
             </div>
         </>
     )

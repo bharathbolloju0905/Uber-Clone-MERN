@@ -79,36 +79,46 @@ const Main = () => {
       setSuggestionsList([]);
     }
   };
+     
+    function  handleCancel(){
+      setrideAccepted(null);
+      setSource("");
+      setDestination("");
+      setSuggestionsList([]);
+      setvehiclepanel(false);
+      setSelectedVehicle(null);
+      inputContainer.current.style.height = "fit-content";
+      inputContainer.current.style.top = "unset";
+      inputContainer.current.style.bottom = "3rem";
+      suggestions.current.style.display = "none";
+
+      }
   useEffect(() => {
+    const audio = new Audio("/notification.mp3"); // Load the sound file from the public folder
+
     receiveMessage("ride-accepted", (data) => {
       console.log("Ride accepted:", data);
       setrideAccepted(data);
+
+      // Play the notification sound
+      audio.play();
 
       // Hide the VehicleDetials ref when the ride is accepted
       if (VehicleDetials.current) {
         VehicleDetials.current.style.display = "none";
       }
-      LookingVehicle.current.style.display = "none";  
+      LookingVehicle.current.style.display = "none";
     });
 
     receiveMessage("ride-completed", (data) => {
       console.log("Ride completed:", data);
-      setrideAccepted(null);
-      setSource('');
-      setDestination('');
-      setSuggestionsList([]);
-      setvehiclepanel(false);
-      setSelectedVehicle(null);
+      handleCancel()
 
-      // Reset the input container and hide suggestions
-      inputContainer.current.style.height = "fit-content";
-      inputContainer.current.style.top = "unset";
-      inputContainer.current.style.bottom = "3rem";
-      suggestions.current.style.display = "none";
- 
+      // Play the notification sound
+      audio.play();
 
       // Hide the VehicleDetials ref when the ride is completed
-      LookingVehicle.current.style.display = "none";  
+      LookingVehicle.current.style.display = "none";
     });
   }, [receiveMessage]);
 
@@ -197,14 +207,14 @@ const Main = () => {
         <VehicleDetial LookingVehicle={LookingVehicle} VehicleDetialsRef={VehicleDetials} img={`/images/${selectedVehicle}.png`} destination={destination} fare={fare[selectedVehicle]} selectedVehicle={selectedVehicle} source={source} />
       </div>
       <div className="vehicle-details looking-for-vehicle" ref={LookingVehicle}>
-        <LookingForVehicle fare={fare[selectedVehicle]} img={`/images/${selectedVehicle}.png`} source={source} selectedVehicle={selectedVehicle} />
+        <LookingForVehicle fare={fare[selectedVehicle]} img={`/images/${selectedVehicle}.png`} source={source} selectedVehicle={selectedVehicle}  LookingVehicle={LookingVehicle} setvehiclepanel={setvehiclepanel}/>
       </div>
         {console.log(rideAccepted)}
       {rideAccepted && (
         <>
           {console.log("Rendering RideAccepted component with:", rideAccepted)}
           <div className=' ride-accepted'>
-            <RideAccepted rideAccepted={rideAccepted} />
+            <RideAccepted rideAccepted={rideAccepted} setRideAccepted={setrideAccepted}/>
           </div>
         </>
       )}
