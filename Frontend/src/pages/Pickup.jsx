@@ -8,11 +8,13 @@ import toast from 'react-hot-toast'
 import { useNavigate } from 'react-router-dom'
 import axios from 'axios'
 import LiveTracking from '../component/LiveTracking';
+import GetDirections from "../component/getDirections"
 
 const Pickup = () => {
     const [showdetails, setshowdetails] = useState(false) ;
     const location = useLocation()
     const ride = location.state?.ride ;
+
     
     console.log("in pcup ride:",ride)
     const navigate = useNavigate()
@@ -37,7 +39,7 @@ async function handleEndRide() {
             </div>
             <div className='map-container mt-5'>
                 <div>
-                    <LiveTracking />
+                <GetDirections origin={ride?.pickup} destination={ride?.destination} />
                 </div>
                 <div className='navigations'>
                     <TbArrowCurveRight className='icon-right' />

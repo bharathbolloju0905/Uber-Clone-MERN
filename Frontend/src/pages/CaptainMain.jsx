@@ -189,6 +189,7 @@ const CaptainMain = () => {
             confirmtion={confirmation}
             setconfirmtion={setConfirmation}
             newRide={newRide}
+            setNewRide= {setNewRide}
           />
         </div>
       )}

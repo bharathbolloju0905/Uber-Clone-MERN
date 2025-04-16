@@ -18,7 +18,7 @@ const StartingRide = ({ setridedetails, setconfirmtion, newRide, setStartRide })
         });
         if (response.status === 200) {
             console.log("response from starting ride:", response.data);
-            navigate('/user-pickup', { state: { ride: response.data.ride } });
+            navigate('/user-pickup', { state: { ride: response.data.ride} });
         }
         else {
             console.log("error in starting ride:", response.data);

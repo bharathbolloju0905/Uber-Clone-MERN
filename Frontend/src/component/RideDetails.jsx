@@ -2,7 +2,7 @@ import React from 'react'
 import { FaLocationDot } from 'react-icons/fa6'
 import { FaRegCircle } from "react-icons/fa";
 
-const RideDetails = ({ setridedetails ,setconfirmtion,newRide}) => {
+const RideDetails = ({ setridedetails ,setconfirmtion,newRide,setNewRide}) => {
     function handleClick(){
         setconfirmtion(true)
         setridedetails(false)
@@ -10,6 +10,7 @@ const RideDetails = ({ setridedetails ,setconfirmtion,newRide}) => {
     function handleClose(){
         setconfirmtion(false)
         setridedetails(false)
+        setNewRide(null)
     }
     return (
         <div className='ride-details-container '>

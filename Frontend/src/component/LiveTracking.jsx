@@ -150,7 +150,7 @@ const LiveTracking = () => {
                     }}
                 />
             </GoogleMap>
-            <button
+            {/* <button
                 onClick={() => setAutoCenter((prev) => !prev)}
                 style={{
                     marginTop: '10px',
@@ -163,7 +163,7 @@ const LiveTracking = () => {
                 }}
             >
                 {autoCenter ? 'Stop Auto-Centering' : 'Resume Auto-Centering'}
-            </button>
+            </button> */}
         </div>
     );
 };
